@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
-from langchain.vectorstores import FAISS
-from langchain.chains import RetrievalQA
-from config import get_chat_model, get_embeddings_model
+from langchain_community.vectorstores import FAISS
+from langchain_openai import ChatOpenAI
+from langchain_core.runnables import RunnableParallel, RunnablePassthrough
+from config import get_embeddings_model
 
 VECTORSTORE_FOLDER = "vectorstore"
 
@@ -16,32 +17,38 @@ def load_vectorstore():
         allow_dangerous_deserialization=True
     )
 
-
-# Load vectorstore at startup
+# Load vectorstore
 vectorstore = load_vectorstore()
 
-# Build retrieval-based QA chain
-qa_chain = RetrievalQA.from_chain_type(
-    llm=get_chat_model(),
-    chain_type="stuff",
-    retriever=vectorstore.as_retriever(search_kwargs={"k": 4})
-)
+# Chat model (LLM)
+llm = ChatOpenAI(model="gpt-4o-mini")
 
+# Retriever
+retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
+
+# LCEL pipeline for retrieval + answer generation
+qa_chain = (
+    RunnableParallel(
+        context=retriever,
+        question=RunnablePassthrough()
+    )
+    | (lambda x: f"Use the context below to answer the question.\n\nContext:\n{x['context']}\n\nQuestion:\n{x['question']}")
+    | llm
+)
 
 @app.route("/ask", methods=["POST"])
 def ask_question():
-    """Handle JSON-based question requests."""
     data = request.get_json()
-
+    
     if not data or "question" not in data:
         return jsonify({"error": "Request must contain 'question' field."}), 400
-
+    
     question = data["question"]
     print(f"Received question: {question}")
 
     try:
-        answer = qa_chain.run(question)
-        return jsonify({"answer": answer})
+        result = qa_chain.invoke(question)
+        return jsonify({"answer": result.content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
