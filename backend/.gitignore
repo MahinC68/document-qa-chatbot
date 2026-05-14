@@ -1,0 +1,10 @@
+# Secrets — never commit the real key
+.env
+
+# Generated at runtime — rebuilt from uploaded PDFs
+vectorstore/
+docs/
+
+# Python bytecode
+__pycache__/
+*.pyc

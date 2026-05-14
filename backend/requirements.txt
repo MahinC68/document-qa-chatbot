@@ -1,0 +1,21 @@
+# Web framework and server
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+python-multipart==0.0.20      # required by FastAPI for file uploads
+
+# LangChain core + integrations
+langchain==0.3.25
+langchain-community==0.3.23
+langchain-openai==0.3.16
+
+# Vector store
+faiss-cpu==1.10.0
+
+# PDF loading
+pypdf==5.4.0
+
+# OpenAI SDK (used transitively by langchain-openai)
+openai==1.82.0
+
+# Environment variable loading
+python-dotenv==1.1.0
