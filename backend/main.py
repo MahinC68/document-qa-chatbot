@@ -4,10 +4,12 @@ import os
 import shutil
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import DOCS_FOLDER
 from ingest import ingest_pdf
+from rag import ask_question as rag_ask, session_memory
 
 app = FastAPI(title="DocuChat API", version="0.1.0")
 
@@ -41,7 +43,25 @@ async def upload_pdf(file: UploadFile = File(...)):
     return {"message": "success", "filename": file.filename, "chunks": chunks}
 
 
+class AskRequest(BaseModel):
+    question: str
+    session_id: str
+
+
 @app.post("/ask")
-async def ask_question(body: dict):
-    # placeholder — RAG logic goes here once the frontend is wired up
-    return {"answer": "coming soon", "sources": []}
+async def ask_question(body: AskRequest):
+    try:
+        return rag_ask(question=body.question, session_id=body.session_id)
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/session/{session_id}")
+def clear_session(session_id: str):
+    """Remove a session's conversation history so the next question starts fresh."""
+    session_memory.pop(session_id, None)  # no-op if session never existed
+    return {"message": "session cleared"}
