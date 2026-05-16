@@ -329,15 +329,31 @@ body {
 .chat-file-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 9999px;
-  color: #3b82f6;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #93c5fd;
+  border-radius: 10px;
+  color: #1d4ed8;
   font-size: 12px;
-  font-weight: 500;
-  max-width: 260px;
+  font-weight: 600;
+  max-width: 280px;
+  box-shadow: 0 1px 6px rgba(29, 78, 216, 0.12);
+}
+
+.chat-file-badge::before {
+  content: 'PDF';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  background: #1d4ed8;
+  border-radius: 4px;
+  padding: 2px 5px;
+  flex-shrink: 0;
 }
 
 .chat-file-name {
@@ -375,14 +391,17 @@ body {
 .messages-scroll {
   flex: 1;
   overflow-y: auto;
-  /* bottom padding ensures messages aren't hidden behind the fixed input bar */
-  padding: 28px 16px 100px;
+  padding: 28px 0 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* inner column capped at 700px and centred */
 .messages-inner {
+  width: 100%;
   max-width: 700px;
-  margin: 0 auto;
+  padding: 0 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;

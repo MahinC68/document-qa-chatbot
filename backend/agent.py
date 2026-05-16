@@ -29,11 +29,6 @@ DIRECT_PHRASES = [
 
 def router(state: AgentState) -> str:
     question = state["question"].strip().lower()
-    words = question.split()
-
-    if len(words) < 4:
-        print(f"[agent] direct_node — too short ({len(words)} words): {question!r}")
-        return "direct_node"
 
     for phrase in DIRECT_PHRASES:
         if re.search(rf"\b{re.escape(phrase)}\b", question):

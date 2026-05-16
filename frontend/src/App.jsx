@@ -103,6 +103,15 @@ export default function App() {
     e?.preventDefault();
     const text = input.trim();
     if (!text) return;
+
+    // Block submission on the landing page if no PDF has been uploaded yet
+    if (!isChat && uploadedFiles.length === 0) {
+      setFileError("Please upload a PDF before asking a question.");
+      setTimeout(() => setFileError(""), 3500);
+      setInput("");
+      return;
+    }
+
     sendMessage(text);
     setInput("");
   }
