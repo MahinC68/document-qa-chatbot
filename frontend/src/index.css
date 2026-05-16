@@ -32,8 +32,13 @@ body {
   height: 100vh;
   overflow: hidden;
   background-color: #ffffff;
-  background-image: radial-gradient(circle, #d1d9e6 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(226, 232, 240, 0.4) 0px,
+    rgba(226, 232, 240, 0.4) 1px,
+    transparent 1px,
+    transparent 12px
+  );
 }
 
 /* Shift to 42% to close the dead white gap between content and the dome rim. */
@@ -80,8 +85,8 @@ body {
 
 .pill {
   background: #f8fafc;
-  color: #475569;
-  border: 1px solid #e2e8f0;
+  color: #3b82f6;
+  border: 1px solid #bfdbfe;
   border-radius: 9999px;
   padding: 5px 13px;
   font-size: 0.78rem;
@@ -159,7 +164,7 @@ body {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
-  background: linear-gradient(90deg, #2563eb, #0f172a);
+  background: linear-gradient(90deg, #2563eb, #1e40af);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -179,7 +184,7 @@ body {
   display: flex;
   align-items: center;
   gap: 7px;
-  background: #2563eb;
+  background: #1d4ed8;
   border: none;
   border-radius: 999px;
   padding: 10px 22px;
@@ -386,7 +391,7 @@ body {
 }
 
 .input-pill:focus-within {
-  border-color: #60a5fa;
+  border-color: #1d4ed8;
   box-shadow: 0 4px 22px rgba(37, 99, 235, 0.2);
 }
 
