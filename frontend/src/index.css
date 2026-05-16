@@ -106,9 +106,30 @@ body {
     0 0 65px 18px rgba(186, 230, 253, 0.25);
 
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding-bottom: 44px;
+  padding: 0 32px;
+}
+
+.semicircle-content {
+  text-align: center;
+  max-width: 440px;
+}
+
+.rim-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.rim-statement {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #ffffff;
+  line-height: 1.5;
 }
 
 /* DocuChat heading — on white, stays dark navy */

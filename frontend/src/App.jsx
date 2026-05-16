@@ -183,9 +183,12 @@ export default function App() {
             )}
           </div>
 
-          {/* gradient semicircle dome — tagline sits inside the blue glow */}
+          {/* gradient semicircle dome */}
           <div className="semicircle">
-            <p className="brand-tagline">Ask anything about your documents</p>
+            <div className="semicircle-content">
+              <p className="rim-label">Powered by RAG + LangGraph</p>
+              <p className="rim-statement">Answers grounded in your documents — not the internet</p>
+            </div>
           </div>
         </div>
       )}
