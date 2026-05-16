@@ -168,9 +168,9 @@ export default function App() {
             </p>
 
             <div className="feature-pills">
-              <span className="pill">⚡ Instant answers</span>
-              <span className="pill">📄 Source citations</span>
-              <span className="pill">🔒 Your data, your docs</span>
+              <span className="pill">Instant answers</span>
+              <span className="pill">Source citations</span>
+              <span className="pill">Your data, your docs</span>
             </div>
 
             <form className="input-pill" onSubmit={handleSubmit}>
