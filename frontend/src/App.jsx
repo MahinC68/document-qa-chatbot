@@ -160,6 +160,7 @@ export default function App() {
         <div className="landing">
           {/* DocuChat title + tagline + pills + search bar + upload */}
           <div className="landing-center">
+            <LogoMark />
             <h1 className="brand-title">DocuChat</h1>
             <p className="landing-tagline">
               {typedTagline}
@@ -167,9 +168,9 @@ export default function App() {
             </p>
 
             <div className="feature-pills">
-              <span className="pill">Instant answers</span>
-              <span className="pill">Source citations</span>
-              <span className="pill">Your data, your docs</span>
+              <span className="pill">⚡ Instant answers</span>
+              <span className="pill">📄 Source citations</span>
+              <span className="pill">🔒 Your data, your docs</span>
             </div>
 
             <form className="input-pill" onSubmit={handleSubmit}>
@@ -188,7 +189,7 @@ export default function App() {
               className="upload-btn-landing"
               onClick={() => fileInputRef.current?.click()}
             >
-              <PaperclipIcon />
+              <UploadIcon />
               Upload PDF
             </button>
 
@@ -228,6 +229,49 @@ export default function App() {
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 // Inline SVGs avoid an icon-library dependency
+
+function LogoMark() {
+  return (
+    <svg
+      className="logo-mark"
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      stroke="#2563eb"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="2" width="21" height="29" rx="2.5" />
+      {/* text lines inside the document */}
+      <line x1="8" y1="9"  x2="20" y2="9"  strokeWidth="1.4" />
+      <line x1="8" y1="14" x2="20" y2="14" strokeWidth="1.4" />
+      <line x1="8" y1="19" x2="15" y2="19" strokeWidth="1.4" />
+      <rect x="17" y="22" width="19" height="13" rx="4.5" />
+      <path d="M21 35 L19 39 L26 35" />
+    </svg>
+  );
+}
+
+function UploadIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  );
+}
 
 function SendIcon() {
   return (
