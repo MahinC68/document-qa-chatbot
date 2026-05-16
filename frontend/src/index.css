@@ -54,6 +54,18 @@ body {
   font-weight: 500;
   color: #94a3b8;
   text-align: center;
+  min-height: 1.75rem; /* prevents layout shift while characters type in */
+}
+
+.typing-cursor {
+  font-weight: 300;
+  color: #94a3b8;
+  animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 .feature-pills {
@@ -135,9 +147,12 @@ body {
 .brand-title {
   font-size: 3.5rem;
   font-weight: 800;
-  color: #0f172a;
   letter-spacing: -0.02em;
   line-height: 1;
+  background: linear-gradient(90deg, #2563eb, #0f172a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* tagline lives inside the blue dome — white text reads cleanly on the fill */

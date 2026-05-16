@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import "./index.css";
 
 const API = "http://localhost:8000";
+const TAGLINE = "Chat with your documents instantly";
 
 export default function App() {
   // ── core state (logic unchanged) ──────────────────────────────────────────
@@ -50,6 +51,23 @@ export default function App() {
 
   // ── UI-only state ─────────────────────────────────────────────────────────
   const [input, setInput] = useState("");
+
+  // typing animation for the landing tagline
+  const [typedTagline, setTypedTagline] = useState("");
+  const [typingDone, setTypingDone] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    const timer = setInterval(() => {
+      i += 1;
+      setTypedTagline(TAGLINE.slice(0, i));
+      if (i === TAGLINE.length) {
+        clearInterval(timer);
+        setTypingDone(true);
+      }
+    }, 50);
+    return () => clearInterval(timer);
+  }, []);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -143,7 +161,10 @@ export default function App() {
           {/* DocuChat title + tagline + pills + search bar + upload */}
           <div className="landing-center">
             <h1 className="brand-title">DocuChat</h1>
-            <p className="landing-tagline">Chat with your documents instantly</p>
+            <p className="landing-tagline">
+              {typedTagline}
+              {!typingDone && <span className="typing-cursor">|</span>}
+            </p>
 
             <div className="feature-pills">
               <span className="pill">Instant answers</span>
