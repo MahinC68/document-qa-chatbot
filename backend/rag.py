@@ -80,7 +80,18 @@ def ask_question(question: str, session_id: str) -> dict:
         combine_docs_chain_kwargs={"prompt": QA_PROMPT},
     )
 
+    # test the retriever directly before handing off to the chain
+    direct_hits = retriever.invoke(question)
+    print(f"[rag] retriever direct test: {len(direct_hits)} doc(s) for {question!r}")
+    for i, doc in enumerate(direct_hits):
+        print(f"[rag] hit[{i}]: meta={doc.metadata} | {doc.page_content[:150]!r}")
+
     result = chain.invoke({"question": question})
+
+    retrieved = result.get("source_documents", [])
+    print(f"[rag] {len(retrieved)} chunk(s) retrieved for: {question!r}")
+    for i, doc in enumerate(retrieved):
+        print(f"[rag] chunk[{i}]: meta={doc.metadata}, snippet={doc.page_content[:120]!r}")
 
     # Deduplicate sources — multiple chunks can come from the same page
     seen = set()

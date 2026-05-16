@@ -1,3 +1,4 @@
+import re
 from typing import TypedDict
 
 from langgraph.graph import END, StateGraph
@@ -28,14 +29,18 @@ DIRECT_PHRASES = [
 
 def router(state: AgentState) -> str:
     question = state["question"].strip().lower()
+    words = question.split()
 
-    if len(question.split()) < 4:
+    if len(words) < 4:
+        print(f"[agent] direct_node — too short ({len(words)} words): {question!r}")
         return "direct_node"
 
     for phrase in DIRECT_PHRASES:
-        if phrase in question:
+        if re.search(rf"\b{re.escape(phrase)}\b", question):
+            print(f"[agent] direct_node — matched phrase {phrase!r}: {question!r}")
             return "direct_node"
 
+    print(f"[agent] retrieve_node — {question!r}")
     return "retrieve_node"
 
 
