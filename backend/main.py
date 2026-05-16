@@ -9,7 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import DOCS_FOLDER
 from ingest import ingest_pdf
-from rag import ask_question as rag_ask, session_memory
+from rag import session_memory
+from agent import run_agent
 
 app = FastAPI(title="DocuChat API", version="0.1.0")
 
@@ -51,7 +52,8 @@ class AskRequest(BaseModel):
 @app.post("/ask")
 async def ask_question(body: AskRequest):
     try:
-        return rag_ask(question=body.question, session_id=body.session_id)
+        # Route through the LangGraph agent — it decides whether to use RAG or a direct LLM call
+        return run_agent(question=body.question, session_id=body.session_id)
     except FileNotFoundError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
