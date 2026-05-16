@@ -31,16 +31,8 @@ def ingest_pdf(filepath: str, filename: str) -> int:
 
     embeddings = get_embeddings_model()
 
-    if os.path.exists(VECTORSTORE_FOLDER):
-        # add to existing index so previously uploaded docs stay searchable
-        vectorstore = FAISS.load_local(
-            VECTORSTORE_FOLDER,
-            embeddings,
-            allow_dangerous_deserialization=True,
-        )
-        vectorstore.add_documents(chunks)
-    else:
-        vectorstore = FAISS.from_documents(chunks, embeddings)
-
+    # Always build a fresh index — replaces any previous document so only
+    # the current upload is ever searched.
+    vectorstore = FAISS.from_documents(chunks, embeddings)
     vectorstore.save_local(VECTORSTORE_FOLDER)
     return len(chunks)

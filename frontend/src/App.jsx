@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "./index.css";
+import MessageBubble, { TypingIndicator } from "./MessageBubble";
 
 const API = "http://localhost:8000";
 const TAGLINE = "Chat with your documents instantly";
@@ -14,43 +15,65 @@ export default function App() {
   async function sendMessage(text) {
     const userMsg = { role: "user", content: text, sources: [] };
     setMessages((prev) => [...prev, userMsg]);
+    setIsLoading(true);
 
-    const res = await fetch(`${API}/ask`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: text, session_id: sessionId }),
-    });
+    try {
+      const res = await fetch(`${API}/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: text, session_id: sessionId }),
+      });
 
-    const data = await res.json();
-    const assistantMsg = {
-      role: "assistant",
-      content: data.answer,
-      sources: data.sources ?? [],
-    };
-    setMessages((prev) => [...prev, assistantMsg]);
+      const data = await res.json();
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.answer, sources: data.sources ?? [] },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "Could not reach the backend. Make sure the server is running on port 8000.", sources: [] },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   async function uploadFile(file) {
     const form = new FormData();
     form.append("file", file);
+    setIsUploading(true);
 
-    const res = await fetch(`${API}/upload`, {
-      method: "POST",
-      body: form,
-    });
+    try {
+      const res = await fetch(`${API}/upload`, {
+        method: "POST",
+        body: form,
+      });
 
-    const data = await res.json();
-    setUploadedFiles((prev) => [...prev, data.filename]);
+      const data = await res.json();
+      setUploadedFiles((prev) => [...prev, data.filename]);
+    } catch {
+      alert("Upload failed — make sure the backend server is running on port 8000.");
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   async function newChat() {
-    await fetch(`${API}/session/${sessionId}`, { method: "DELETE" });
+    try {
+      await fetch(`${API}/session/${sessionId}`, { method: "DELETE" });
+    } catch {
+      // session cleanup is best-effort; proceed regardless
+    }
     setMessages([]);
     setSessionId(uuidv4());
   }
 
   // ── UI-only state ─────────────────────────────────────────────────────────
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [fileError, setFileError] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   // typing animation for the landing tagline
   const [typedTagline, setTypedTagline] = useState("");
@@ -84,10 +107,33 @@ export default function App() {
     setInput("");
   }
 
+  function removeFile(index) {
+    setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
+  }
+
   function handleFileChange(e) {
     const file = e.target.files?.[0];
-    if (file) uploadFile(file);
-    e.target.value = ""; // reset so the same file can be re-uploaded
+    if (!file) return;
+
+    // Enforce single-file limit
+    if (uploadedFiles.length > 0) {
+      setFileError("Only one file can be uploaded at a time. Remove the current file first.");
+      setTimeout(() => setFileError(""), 4000);
+      e.target.value = "";
+      return;
+    }
+
+    // Reject anything that isn't a PDF
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      setFileError("Only PDF files are supported. Please select a .pdf file.");
+      setTimeout(() => setFileError(""), 4000);
+      e.target.value = "";
+      return;
+    }
+
+    setFileError("");
+    uploadFile(file);
+    e.target.value = "";
   }
 
   const isChat = messages.length > 0;
@@ -98,49 +144,39 @@ export default function App() {
       {isChat ? (
         // ── Chat view ───────────────────────────────────────────────────────
         <div className="chat">
+          {/* Fixed header: clicking the logo resets to the landing page */}
           <header className="chat-header">
-            <span className="brand-small">DocuChat</span>
-            <button className="new-chat-btn" onClick={newChat}>
-              New Chat
+            <button className="chat-brand" onClick={newChat} title="Go to home">
+              <LogoMark size={28} />
+              <span className="brand-small">DocuChat</span>
             </button>
+
+            {/* Show the active PDF on the right side of the header */}
+            {uploadedFiles.length > 0 && (
+              <div className="chat-file-badge">
+                <DocFileIcon />
+                <span className="chat-file-name">{uploadedFiles[0]}</span>
+              </div>
+            )}
           </header>
 
-          {/* scrollable message column, capped at 700px */}
+          {/* Scrollable message history — capped at 700px, padded so bubbles
+              don't disappear behind the fixed input bar at the bottom */}
           <div className="messages-scroll">
             <div className="messages-inner">
               {messages.map((msg, i) => (
-                <div key={i} className={`message-row ${msg.role}`}>
-                  <div className={`bubble ${msg.role}`}>
-                    {msg.content}
-
-                    {/* source citations shown only on assistant messages */}
-                    {msg.role === "assistant" && msg.sources.length > 0 && (
-                      <div className="sources">
-                        {msg.sources.map((s, j) => (
-                          <span key={j} className="source-chip">
-                            {s.document} · p{s.page + 1}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <MessageBubble key={i} message={msg} />
               ))}
-              {/* invisible anchor so useEffect can scroll here */}
+              {/* Typing indicator shown while the assistant is responding */}
+              {isLoading && <TypingIndicator />}
+              {/* Invisible anchor — scrolled into view on every new message */}
               <div ref={messagesEndRef} />
             </div>
           </div>
 
-          {/* fixed input bar at the bottom */}
+          {/* Fixed input bar — no upload in chat, that happens on the landing page */}
           <div className="chat-input-area">
             <div className="chat-input-inner">
-              <button
-                className="upload-btn"
-                onClick={() => fileInputRef.current?.click()}
-                title="Upload PDF"
-              >
-                <PaperclipIcon />
-              </button>
               <form className="input-pill" onSubmit={handleSubmit}>
                 <input
                   value={input}
@@ -168,9 +204,9 @@ export default function App() {
             </p>
 
             <div className="feature-pills">
-              <span className="pill">Instant answers</span>
+              <span className="pill">Ask in seconds</span>
               <span className="pill">Source citations</span>
-              <span className="pill">Your data, your docs</span>
+              <span className="pill">No setup needed</span>
             </div>
 
             <form className="input-pill" onSubmit={handleSubmit}>
@@ -185,20 +221,38 @@ export default function App() {
               </button>
             </form>
 
-            <button
-              className="upload-btn-landing"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <UploadIcon />
-              Upload PDF
-            </button>
+            {/* Upload button → spinner → file chip, mutually exclusive */}
+            {isUploading ? (
+              <div className="upload-loading">
+                <div className="upload-spinner" />
+                <span>Processing PDF…</span>
+              </div>
+            ) : uploadedFiles.length === 0 ? (
+              <button
+                className="upload-btn-landing"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <UploadIcon />
+                Upload PDF
+              </button>
+            ) : null}
 
-            {/* show filenames once a PDF has been uploaded */}
+            {/* Wrong file type warning — auto-clears after 4s */}
+            {fileError && <p className="file-type-error">{fileError}</p>}
+
+            {/* Uploaded file chips with remove button */}
             {uploadedFiles.length > 0 && (
               <div className="uploaded-list">
                 {uploadedFiles.map((f, i) => (
                   <span key={i} className="file-chip">
-                    {f}
+                    <span className="file-chip-name">{f}</span>
+                    <button
+                      className="file-chip-remove"
+                      onClick={() => removeFile(i)}
+                      title="Remove file"
+                    >
+                      ×
+                    </button>
                   </span>
                 ))}
               </div>
@@ -230,12 +284,12 @@ export default function App() {
 // ── Icons ─────────────────────────────────────────────────────────────────────
 // Inline SVGs avoid an icon-library dependency
 
-function LogoMark() {
+function LogoMark({ size = 40 }) {
   return (
     <svg
       className="logo-mark"
-      width="40"
-      height="40"
+      width={size}
+      height={size}
       viewBox="0 0 40 40"
       fill="none"
       stroke="#2563eb"
@@ -287,6 +341,26 @@ function SendIcon() {
     >
       <line x1="22" y1="2" x2="11" y2="13" />
       <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+  );
+}
+
+function DocFileIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="8" y1="13" x2="16" y2="13" />
+      <line x1="8" y1="17" x2="13" y2="17" />
     </svg>
   );
 }
