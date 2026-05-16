@@ -34,11 +34,10 @@ body {
   background: #ffffff;
 }
 
-/* Full landing-center group: title → tagline → pills → search bar → upload.
-   top: 38% centres the taller group comfortably in the white area above the dome. */
+/* Shift to 42% to close the dead white gap between content and the dome rim. */
 .landing-center {
   position: absolute;
-  top: 38%;
+  top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -66,12 +65,12 @@ body {
 }
 
 .pill {
-  background: #f1f5f9;
+  background: #ffffff;
   color: #475569;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 13px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -132,12 +131,12 @@ body {
   line-height: 1.5;
 }
 
-/* DocuChat heading — on white, stays dark navy */
+/* DocuChat heading */
 .brand-title {
-  font-size: 2.75rem;
-  font-weight: 700;
+  font-size: 3.5rem;
+  font-weight: 800;
   color: #0f172a;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 
@@ -155,21 +154,21 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: none;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 9999px;
-  padding: 7px 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 8px 20px;
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 0.85rem;
   font-weight: 500;
   color: #64748b;
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .upload-btn-landing:hover {
-  border-color: #94a3b8;
-  color: #475569;
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 /* chips showing uploaded filenames */
@@ -347,9 +346,9 @@ body {
   border: 1.5px solid #e2e8f0;
   border-radius: 9999px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-  padding: 6px 6px 6px 20px;
+  padding: 8px 8px 8px 20px;
   /* landing default width */
-  width: 560px;
+  width: 640px;
   max-width: calc(100vw - 48px);
 }
 
@@ -384,12 +383,12 @@ body {
   flex-shrink: 0;
   border-radius: 50%;
   border: none;
-  background: #0ea5e9;
+  background: #0f172a;
   color: #ffffff;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .send-btn:hover {
-  background: #0284c7;
+  background: #1e293b;
 }

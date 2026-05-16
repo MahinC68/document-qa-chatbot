@@ -146,9 +146,9 @@ export default function App() {
             <p className="landing-tagline">Chat with your documents instantly</p>
 
             <div className="feature-pills">
-              <span className="pill">⚡ Instant answers</span>
-              <span className="pill">📄 Source citations</span>
-              <span className="pill">🔒 Your data, your docs</span>
+              <span className="pill">Instant answers</span>
+              <span className="pill">Source citations</span>
+              <span className="pill">Your data, your docs</span>
             </div>
 
             <form className="input-pill" onSubmit={handleSubmit}>
@@ -187,7 +187,7 @@ export default function App() {
           <div className="semicircle">
             <div className="semicircle-content">
               <p className="rim-label">Powered by RAG + LangGraph</p>
-              <p className="rim-statement">Answers grounded in your documents — not the internet</p>
+              <p className="rim-statement">Answers grounded in your documents</p>
             </div>
           </div>
         </div>
