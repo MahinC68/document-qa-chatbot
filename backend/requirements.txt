@@ -19,3 +19,9 @@ openai==1.82.0
 
 # Environment variable loading
 python-dotenv==1.1.0
+
+# LangGraph — stateful agent graph (used in agent.py)
+langgraph
+
+# Text splitting utilities (moved to standalone package in newer LangChain)
+langchain-text-splitters
