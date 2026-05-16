@@ -31,50 +31,61 @@ body {
   position: relative;
   height: 100vh;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #ffffff;
 }
 
-/* search bar + upload button, vertically centered and slightly above the dome */
+/* DocuChat title + search bar + upload, sitting in the white area above the dome.
+   top: 36% keeps the group well clear of the semicircle (which starts at ~62vh). */
 .landing-center {
-  position: relative;
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  margin-top: -100px;
+  gap: 16px;
+  width: 100%;
+  padding: 0 24px;
 }
 
-/* gradient dome — a wide half-ellipse anchored to the bottom edge.
-   The radial gradient starts light-blue at the bottom centre and fades
-   outward to fully transparent, giving a soft glow effect. */
+/* Half-ellipse: 38 vh tall so the dome sits lower, leaving generous white space.
+   120 vw wide so the vertical side borders clip off-screen — only the curved
+   arc is visible. The gradient is fully saturated across most of the dome. */
 .semicircle {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 150vw;
-  height: 65vw;
-  min-height: 46vh;
+  width: 120vw;
+  height: 38vh;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+
   background: radial-gradient(
     ellipse at 50% 100%,
-    #e0f2fe 0%,
-    rgba(224, 242, 254, 0.55) 42%,
-    transparent 72%
+    #38bdf8                   0%,   /* sky-400: vivid at the base */
+    rgba(56,  189, 248, 0.92) 22%,
+    rgba(125, 211, 252, 0.78) 45%,
+    rgba(186, 230, 253, 0.45) 68%,
+    transparent               86%
   );
-  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+
+  /* arc border + layered blue glow */
+  border: 1.5px solid rgba(125, 211, 252, 0.9);
+  border-bottom: none;
+  box-shadow:
+    0 0  8px  3px rgba(56,  189, 248, 0.9),
+    0 0 28px  8px rgba(125, 211, 252, 0.55),
+    0 0 65px 18px rgba(186, 230, 253, 0.25);
+
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 52px;
+  padding-bottom: 44px;
 }
 
-.brand {
-  text-align: center;
-}
-
+/* DocuChat heading — on white, stays dark navy */
 .brand-title {
   font-size: 2.75rem;
   font-weight: 700;
@@ -83,11 +94,13 @@ body {
   line-height: 1;
 }
 
+/* tagline lives inside the blue dome — white text reads cleanly on the fill */
 .brand-tagline {
-  margin-top: 10px;
   font-size: 1rem;
-  font-weight: 400;
-  color: #94a3b8;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.01em;
+  text-align: center;
 }
 
 /* Upload PDF button on the landing page */

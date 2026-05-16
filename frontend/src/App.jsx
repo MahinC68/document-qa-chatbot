@@ -140,8 +140,9 @@ export default function App() {
       ) : (
         // ── Landing view ────────────────────────────────────────────────────
         <div className="landing">
-          {/* search bar sits in the middle of the page, above the dome */}
+          {/* DocuChat title + search bar + upload, centred in the white area */}
           <div className="landing-center">
+            <h1 className="brand-title">DocuChat</h1>
             <form className="input-pill" onSubmit={handleSubmit}>
               <input
                 value={input}
@@ -174,12 +175,9 @@ export default function App() {
             )}
           </div>
 
-          {/* gradient semicircle dome rising from the bottom edge */}
+          {/* gradient semicircle dome — tagline sits inside the blue glow */}
           <div className="semicircle">
-            <div className="brand">
-              <h1 className="brand-title">DocuChat</h1>
-              <p className="brand-tagline">Ask anything about your documents</p>
-            </div>
+            <p className="brand-tagline">Ask anything about your documents</p>
           </div>
         </div>
       )}
