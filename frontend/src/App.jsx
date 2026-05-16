@@ -140,9 +140,17 @@ export default function App() {
       ) : (
         // ── Landing view ────────────────────────────────────────────────────
         <div className="landing">
-          {/* DocuChat title + search bar + upload, centred in the white area */}
+          {/* DocuChat title + tagline + pills + search bar + upload */}
           <div className="landing-center">
             <h1 className="brand-title">DocuChat</h1>
+            <p className="landing-tagline">Chat with your documents instantly</p>
+
+            <div className="feature-pills">
+              <span className="pill">⚡ Instant answers</span>
+              <span className="pill">📄 Source citations</span>
+              <span className="pill">🔒 Your data, your docs</span>
+            </div>
+
             <form className="input-pill" onSubmit={handleSubmit}>
               <input
                 value={input}

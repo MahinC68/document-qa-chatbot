@@ -34,20 +34,46 @@ body {
   background: #ffffff;
 }
 
-/* DocuChat title + search bar + upload, sitting in the white area above the dome.
-   top: 36% keeps the group well clear of the semicircle (which starts at ~62vh). */
+/* Full landing-center group: title → tagline → pills → search bar → upload.
+   top: 38% centres the taller group comfortably in the white area above the dome. */
 .landing-center {
   position: absolute;
-  top: 36%;
+  top: 38%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
   padding: 0 24px;
+}
+
+.landing-tagline {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.feature-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 4px; /* small extra gap before the search bar */
+}
+
+.pill {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* Half-ellipse: 38 vh tall so the dome sits lower, leaving generous white space.
