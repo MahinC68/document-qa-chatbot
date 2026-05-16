@@ -31,7 +31,9 @@ body {
   position: relative;
   height: 100vh;
   overflow: hidden;
-  background: #ffffff;
+  background-color: #ffffff;
+  background-image: radial-gradient(circle, #d1d9e6 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* Shift to 42% to close the dead white gap between content and the dome rim. */
