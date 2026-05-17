@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import "./index.css";
 import MessageBubble, { TypingIndicator } from "./MessageBubble";
 
-const API = "http://localhost:8000";
+const API = "https://docuchat-lehq.onrender.com";
 const TAGLINE = "Chat with your documents instantly";
 
 export default function App() {
