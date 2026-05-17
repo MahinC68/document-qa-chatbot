@@ -7,7 +7,6 @@ const API = "https://docuchat-lehq.onrender.com";
 const TAGLINE = "Chat with your documents instantly";
 
 export default function App() {
-  // ── core state (logic unchanged) ──────────────────────────────────────────
   const [sessionId, setSessionId] = useState(() => uuidv4());
   const [messages, setMessages] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -63,13 +62,12 @@ export default function App() {
     try {
       await fetch(`${API}/session/${sessionId}`, { method: "DELETE" });
     } catch {
-      // session cleanup is best-effort; proceed regardless
+      // best-effort cleanup
     }
     setMessages([]);
     setSessionId(uuidv4());
   }
 
-  // ── UI-only state ─────────────────────────────────────────────────────────
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [fileError, setFileError] = useState("");
@@ -91,10 +89,10 @@ export default function App() {
     }, 50);
     return () => clearInterval(timer);
   }, []);
+
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // keep the message list scrolled to the latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -104,7 +102,7 @@ export default function App() {
     const text = input.trim();
     if (!text) return;
 
-    // Block submission on the landing page if no PDF has been uploaded yet
+    // require a PDF before the first message
     if (!isChat && uploadedFiles.length === 0) {
       setFileError("Please upload a PDF before asking a question.");
       setTimeout(() => setFileError(""), 3500);
@@ -147,20 +145,17 @@ export default function App() {
 
   const isChat = messages.length > 0;
 
-  // ── render ────────────────────────────────────────────────────────────────
   return (
     <div className="app">
       {isChat ? (
-        // ── Chat view ───────────────────────────────────────────────────────
+        // chat
         <div className="chat">
-          {/* Fixed header: clicking the logo resets to the landing page */}
           <header className="chat-header">
             <button className="chat-brand" onClick={newChat} title="Go to home">
               <LogoMark size={28} />
               <span className="brand-small">DocuChat</span>
             </button>
 
-            {/* Show the active PDF on the right side of the header */}
             {uploadedFiles.length > 0 && (
               <div className="chat-file-badge">
                 <DocFileIcon />
@@ -169,21 +164,16 @@ export default function App() {
             )}
           </header>
 
-          {/* Scrollable message history — capped at 700px, padded so bubbles
-              don't disappear behind the fixed input bar at the bottom */}
           <div className="messages-scroll">
             <div className="messages-inner">
               {messages.map((msg, i) => (
                 <MessageBubble key={i} message={msg} />
               ))}
-              {/* Typing indicator shown while the assistant is responding */}
               {isLoading && <TypingIndicator />}
-              {/* Invisible anchor — scrolled into view on every new message */}
               <div ref={messagesEndRef} />
             </div>
           </div>
 
-          {/* Fixed input bar — no upload in chat, that happens on the landing page */}
           <div className="chat-input-area">
             <div className="chat-input-inner">
               <form className="input-pill" onSubmit={handleSubmit}>
@@ -201,9 +191,8 @@ export default function App() {
           </div>
         </div>
       ) : (
-        // ── Landing view ────────────────────────────────────────────────────
+        // landing
         <div className="landing">
-          {/* DocuChat title + tagline + pills + search bar + upload */}
           <div className="landing-center">
             <LogoMark />
             <h1 className="brand-title">DocuChat</h1>
@@ -230,7 +219,6 @@ export default function App() {
               </button>
             </form>
 
-            {/* Upload button → spinner → file chip, mutually exclusive */}
             {isUploading ? (
               <div className="upload-loading">
                 <div className="upload-spinner" />
@@ -249,7 +237,6 @@ export default function App() {
             {/* Wrong file type warning — auto-clears after 4s */}
             {fileError && <p className="file-type-error">{fileError}</p>}
 
-            {/* Uploaded file chips with remove button */}
             {uploadedFiles.length > 0 && (
               <div className="uploaded-list">
                 {uploadedFiles.map((f, i) => (
@@ -290,8 +277,7 @@ export default function App() {
   );
 }
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
-// Inline SVGs avoid an icon-library dependency
+// Icons — inline SVGs, no icon library needed
 
 function LogoMark({ size = 40 }) {
   return (

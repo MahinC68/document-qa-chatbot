@@ -55,7 +55,6 @@ class AskRequest(BaseModel):
 @app.post("/ask")
 async def ask_question(body: AskRequest):
     try:
-        # Route through the LangGraph agent — it decides whether to use RAG or a direct LLM call
         return run_agent(question=body.question, session_id=body.session_id)
     except FileNotFoundError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -67,6 +66,5 @@ async def ask_question(body: AskRequest):
 
 @app.delete("/session/{session_id}")
 def clear_session(session_id: str):
-    """Remove a session's conversation history so the next question starts fresh."""
-    session_memory.pop(session_id, None)  # no-op if session never existed
+    session_memory.pop(session_id, None)
     return {"message": "session cleared"}
