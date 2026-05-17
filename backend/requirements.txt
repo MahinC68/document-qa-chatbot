@@ -9,7 +9,7 @@ langchain-community==0.3.23
 langchain-openai==0.3.16
 
 # Vector store
-faiss-cpu==1.10.0
+faiss-cpu
 
 # PDF loading
 pypdf==5.4.0
